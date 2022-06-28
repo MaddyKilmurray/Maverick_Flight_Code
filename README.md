@@ -1,25 +1,29 @@
-# Maverick Flight Code
+<h1>Maverick Flight Code</h1>
 
 <img src="https://github.com/MaddyKilmurray/Maverick_Flight_Code/blob/main/Computer%20Details.png?raw=true">
 
 <img src="https://github.com/MaddyKilmurray/Maverick_Flight_Code/blob/main/Computer%20steps.png?raw=true">
 
-# Text Version
+<h1>Text Version</h1>
 
-The Basics
-Double-Sided PCB Board
-22AWG Solid Core Wire
-60/40 Rosin Core 0.5mm Solder Wire
-1/2" Kapton Tape
-Non-Static Sponge
+<h3>The Basics</h3>
+<ul>
+<li>Double-Sided PCB Board</li>
+<li>22AWG Solid Core Wire</li>
+<li>60/40 Rosin Core 0.5mm Solder Wire</li>
+<li>1/2" Kapton Tape</li>
+<li>Non-Static Sponge</li>
+</ul>
 
-The Main Processor
-For this project, I decided to use a Teensy 4.1. The large amount of pins, combined with the beefy processing power and the on-board SD card reader was the winning combo.
+<h3>The Main Processor</h3>
+<p>For this project, I decided to use a Teensy 4.1. The large amount of pins, combined with the beefy processing power and the on-board SD card reader was the winning combo.</p>
 
-Communication Sensors
-Radio: Adafruit RFM69HCW Transceiver Radio Breakout 433 MHz
-GPS: Adafruit Ultimate GPS Breakout
-SD Card: 32GB
+<h3>Communication Sensors</h3>
+<ul>
+<li>Radio: Adafruit RFM69HCW Transceiver Radio Breakout 433 MHz</li>
+<li>GPS: Adafruit Ultimate GPS Breakout</li>
+<li>SD Card: 32GB</li>
+</ul>
 
 Sensors Continued...
 NeoPixel Ring - 12 x 5050 RGB LED
