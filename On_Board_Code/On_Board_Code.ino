@@ -394,7 +394,7 @@ String getAxisInfo() {
     float yAccel = scaledY / 1000.0;
     float zAccel = scaledZ / 1000.0;
     
-  // Print out scaled X,Y,Z accelerometer readings
+  // Return scaled X,Y,Z accelerometer readings
   return (String(xAccel,3) + ',' + String(yAccel,3) + ',' + String(zAccel,3));
 }
 
@@ -621,6 +621,7 @@ void failedSensorsTone() {
 }
 
 void rescueTone() {
+  // Plays tone after reaching apogee to assist with recovery
     tone(buzz1, 2800, 1000);
     delay(500);
     tone(buzz1, 500, 1000);
@@ -637,7 +638,7 @@ void rescueTone() {
 
 void play_rtttl(char *p)
 {
-
+// Plays "Electric Parade" once set up has been completed
   byte default_dur = 4;
   byte default_oct = 6;
   int bpm = 63;
