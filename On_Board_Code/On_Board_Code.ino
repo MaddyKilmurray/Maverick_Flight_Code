@@ -8,40 +8,42 @@
 #include <RHHardwareSPI1.h>
 #include <pitches.h>
 
+// Tone configuration for "Ready to Fly" tone
 #define OCTAVE_OFFSET 0
 
-// Radio
-#define CLIENT_ADDRESS 101
-#define SERVER_ADDRESS 15
-#define RF69_FREQ 433.0
-#define RFM69_CS      38
-#define RFM69_INT     digitalPinToInterrupt(37)
-#define RFM69_RST     36
-#define RFM69_MISO     39
+// Radio configuration
+#define CLIENT_ADDRESS  101
+#define SERVER_ADDRESS  15
+#define RF69_FREQ       433.0
+#define RFM69_CS        38
+#define RFM69_INT       digitalPinToInterrupt(37)
+#define RFM69_RST       36
+#define RFM69_MISO      39
 
-// GPS Information
+// GPS Definition Configurations
 #define GPSSerial Serial2
 #define GPSECHO true
 
-// Neopixel
+// Neopixel Configuration
 #include <Adafruit_NeoPixel.h>
 #ifdef __AVR__
 #include <avr/power.h>
 #endif
 
-// GPS Information
+// GPS Information Configuration
 Adafruit_GPS GPS(&GPSSerial);
 uint32_t timer = millis();
 
-// SD Card
+// SD Card Configuration
 const int chipSelect = BUILTIN_SDCARD;
 
-// Axis Information
+// Axis Configuration
 int scale = 1000;
 const int xInput = 16;
 const int yInput = 15;
 const int zInput = 14;
 
+// These min max values were configured manually once the sensor was connected.
 int xRawMin = 408;
 int xRawMax = 410;
 
@@ -51,41 +53,45 @@ int yRawMax = 411;
 int zRawMin = 408;
 int zRawMax = 412;
 
-// Buzzer
+// Buzzer Configuration
 int buzz1 = 33;
 
-// Neopixel
+// Neopixel Configuration
 int pin = 13;
 int numpixels = 12;
 int pixelcount = 0;
 Adafruit_NeoPixel pixels(numpixels, pin, NEO_GRB + NEO_KHZ800);
 
-// Strings for transmission
+// Empty strings for transmission
 String dataString;
 String gpsString;
 
-// Altitude calculations
+// Altitude calculation configuation
 MS5611 MS5611(0x77);
 int MS5611_AVERAGE = 32;
-float sea_pressure = 998; 
+float sea_pressure = 998; // Air Pressure needs to be manually changed based on location
 float sea_temperature;
 float current_altitude, current_pressure, current_temperature;
 
 // Flight altitude flag - switches when over 500m
 bool flightAltitude = false;
 
-// Radio Drivers
+// Radio Driver Configuration
 RH_RF69 driver(RFM69_CS, RFM69_INT, hardware_spi1);
 RHReliableDatagram manager(driver, CLIENT_ADDRESS);
 
+// Counter for Radio transmissions
 int radioCount = 0;
 int transmissionCount = 0;
 
+// Empty String for GPS data to be written to
 String gpsData;
 
+// Arrays required for transmission of radio data
 uint8_t radioData[45];
 uint8_t buf[RH_RF69_MAX_MESSAGE_LEN];
 
+// Configuration for musical tones
 int notes[] = { 0,
                 262, 277, 294, 311, 330, 349, 370, 392, 415, 440, 466, 494,
                 523, 554, 587, 622, 659, 698, 740, 784, 831, 880, 932, 988,
@@ -94,6 +100,12 @@ int notes[] = { 0,
               };
 char *song = "MainStre:d=16,o=6,b=125:8g,8d,8g,8a,8b,8d7,8c7,8a,8b,8g,8e,8a,8f#,8e,f#,e,8d,8g,8d,8g,8a,8b,8d7,8c7,8a,8b,8g,8e,8a,f#,e,f#,d,8g,8p,g,p,b,c7,8d7,g,p,8e,a,g,f#,e,f#,d,g,p,g,a,b,a,g,f#,8e,a,p,f#,e,f#,d,g,p,b,c7,8d7,g,p,8e,a,g,f#,e,f#,d,g,a,b,g,a,b,a,g,f#,e,f#,d,c7";
 
+// When the computer is turned on, this is the set-up method.
+// Initially, the NeoPixels lights light up one at a time, then flash
+// Then, as each sensor is initialised, two lights are lit up. If all sensors are connected,
+// the NeopIxel will turn green and play the "Success" tone.
+// If any sensors do not work, the matchng lights will show up as red, and once all sensors 
+// have been checked, it will play the "Failed" tone.
 void setUpLights() {
 
   SPI1.setCS(RFM69_CS);
@@ -245,6 +257,9 @@ void setUpLights() {
   } 
 }
 
+// This method initialises the GPS sensor. It will continue to loop until 
+// the sensor has picked up a satelitte fix. Once it has, it will play
+// the final setting up tone.
 bool setUpGPS() {
   if (!GPS.begin(9600)) {
     return false;
@@ -285,6 +300,7 @@ bool setUpGPS() {
     return true;
 }
 
+// This method initialises the radio, sets the frequency, encryption and power.
 bool setUpRadio() {
 
   pinMode(RFM69_RST, OUTPUT);
@@ -313,6 +329,11 @@ bool setUpRadio() {
   return true;
 }
 
+// This method lights up the Neopixel when all is running correctly and has been initialised.
+// When the main method is running, this will refresh so quickly that it is hard to tell the 
+// difference between the lights. However, due to the delay needed for the radio to send a 
+// message, the lights will pause and appear as intended. This is a good way to troubleshoot
+// that the radio is working without looking at the ground computer.
 void launchLights() {
   bool testingComplete = false;
   bool flash = false;
